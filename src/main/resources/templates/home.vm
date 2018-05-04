@@ -1,0 +1,28 @@
+<html>
+<html>
+<pre>
+Hello world.
+##普通变量
+##${value1}
+##${value3}
+
+#foreach($l in $list)
+List $!{foreach.index}/$!{foreach.count}:$!{l}
+#end
+
+#foreach($k in $maptest.keySet())
+Map Key: $!{foreach.index}/$!{foreach.count}:$!{k}
+#end
+
+#foreach($v in $maptest.entrySet())
+    Map Value: $!{foreach.index}/$!{foreach.count}:$!{v}
+#end
+#set($title = "pwdTitle")
+Include:   #include("header.vm")
+    <br>
+Parse:   #parse("header.vm")
+
+
+</pre>
+</body>
+</html>
