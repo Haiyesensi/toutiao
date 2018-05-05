@@ -1,15 +1,16 @@
 package com.amber.toutiao.Controller;
 
 
+import com.amber.toutiao.Service.ToutiaoService;
 import com.amber.toutiao.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.HttpServletBean;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,11 +19,18 @@ import java.util.*;
 
 @Controller
 public class IndexController {
+    private static Logger logger = LoggerFactory.getLogger(IndexController.class);
+
+    @Autowired
+    private ToutiaoService toutiaoService;
 
     @RequestMapping(path = {"/","/index"})
     @ResponseBody
-    public String getString(){
-        return "home.vm";
+    public String getString(HttpSession session){
+        logger.info("Enter Index");
+
+        return "home"+ session.getAttribute("userStatus")+"<br>"+
+                " Say: "+toutiaoService.Say();
     }
 
     @RequestMapping(path = {"/profile/{groupId}/{name}"})
@@ -64,7 +72,56 @@ public class IndexController {
             h.append(i+" "+name+"   "+httpServletRequest.getHeader(name)+"<br>");
             i++;
         }
+        for(Cookie cookie:httpServletRequest.getCookies()){
+            h.append(cookie.toString()+"<br>");
+            h.append(cookie.getName()+"<br>");
+            h.append(cookie.getComment());
+            h.append(cookie.getDomain()+"<br>");
+            h.append(cookie.getPath()+"<br>");
+            h.append(cookie.getValue()+"<br>");
+            h.append(cookie.getVersion()+"<br>");
+            h.append(cookie.getSecure()+"<br>");
+
+        }
         return h.toString();
     }
 
+    @RequestMapping(path = "/response")
+    @ResponseBody
+    public String response(@CookieValue(value = "userID",defaultValue = "toutiao") String userID,
+                           @RequestParam(value = "key",defaultValue = "defaultkey") String responseKey,
+                           @RequestParam(value = "value",defaultValue = "defaultvalue") String responseValue,
+                           HttpServletResponse response){
+        response.addCookie(new Cookie(responseKey,responseValue));
+        response.addHeader("new Header "+responseKey,"new Header "+responseValue);
+        return "th--------th "+userID;
+    }
+
+    @RequestMapping(path = "/redirect/{code}")
+    public String redirect(@PathVariable("code") int code,
+                           HttpSession session){
+//        RedirectView redirectView = new RedirectView("/",true);
+//        if(code == 301){
+//            redirectView.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+//        }
+//        return redirectView;
+        session.setAttribute("userStatus","quiting and sleeping");
+        return "redirect:/";
+    }
+
+    @RequestMapping(path = "/admin")
+    @ResponseBody
+    public String admin(@RequestParam(value = "key",defaultValue = "default") String key){
+        if(key.equals("admin")){
+            return "hello admin!";
+        }else{
+            throw new IllegalArgumentException("You are not admin!");
+        }
+    }
+
+    @ExceptionHandler
+    @ResponseBody
+    public String exception(Exception e){
+        return "ERROR "+ e.getMessage();
+    }
 }
