@@ -3,23 +3,18 @@ package com.amber.toutiao.model;
 public class User {
     private int id;
     private String name;
-    private int age;
     private String password;
+    private String salt;
+    private String headUrl;
 
-    public int getId() {
-        return id;
+    public User() {
+
     }
-
-    public User(int id, String name, int age, String password) {
-        this.id = id;
+    public User(String name) {
         this.name = name;
-        this.age = age;
-        this.password = password;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-
+        this.password = "";
+        this.salt = "";
+        this.headUrl = "";
     }
 
     public String getName() {
@@ -30,19 +25,35 @@ public class User {
         this.name = name;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getHeadUrl() {
+        return headUrl;
+    }
+
+    public void setHeadUrl(String headUrl) {
+        this.headUrl = headUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -2,7 +2,6 @@ package com.amber.toutiao.Controller;
 
 
 import com.amber.toutiao.Service.ToutiaoService;
-import com.amber.toutiao.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +45,6 @@ public class IndexController {
     public String home(Model model){
         model.addAttribute("value1","this is model's value");
         model.addAttribute("value3","this is model's value");
-
-        User user = new User(01,"shihchang",20,"jjjjjjkk");
-        model.addAttribute("user",user);
-
         List<String> list = Arrays.asList(new String[]{"as","ss","ccc"});
         model.addAttribute("list",list);
 
