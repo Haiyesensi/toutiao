@@ -1,4 +1,4 @@
-package com.amber.toutiao.Service;
+package com.amber.service;
 
 
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.amber.toutiao.model;
+package com.amber.model;
 
 public class User {
     private int id;

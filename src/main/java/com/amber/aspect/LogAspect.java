@@ -1,4 +1,4 @@
-package com.amber.toutiao.aspect;
+package com.amber.aspect;
 
 
 import org.aspectj.lang.JoinPoint;
