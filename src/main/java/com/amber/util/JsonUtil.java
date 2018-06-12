@@ -1,4 +1,4 @@
-package com.amber.uitl;
+package com.amber.util;
 
 import com.alibaba.fastjson.JSONObject;
 

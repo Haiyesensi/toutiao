@@ -5,7 +5,7 @@ import com.amber.dao.TicketDao;
 import com.amber.dao.UserDao;
 import com.amber.model.Ticket;
 import com.amber.model.User;
-import com.amber.uitl.MD5Util;
+import com.amber.util.MD5Util;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
