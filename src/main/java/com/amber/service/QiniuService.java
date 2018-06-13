@@ -1,6 +1,5 @@
 package com.amber.service;
 import com.alibaba.fastjson.JSONObject;
-import com.amber.controller.NewsController;
 import com.amber.util.FileUtil;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;

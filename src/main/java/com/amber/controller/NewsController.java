@@ -35,11 +35,15 @@ public class NewsController {
     @ResponseBody
     public String addNews(@RequestParam("title") String title,
                           @RequestParam("link") String link,
-                          @RequestParam("image") MultipartFile file) throws IOException {
-        String imgUrl = newsService.saveImage(file);
-        News news = newsService.addNews(title,link,imgUrl);
-        if(news == null){
-            logger.error("share error!");
+                          @RequestParam("image") String image) throws IOException {
+        try{
+            News news = newsService.addNews(title,link,image);
+            if(news == null){
+                logger.error("share error!");
+                return JsonUtil.getJSONString(1, "share error");
+            }
+        }catch (Exception e){
+            logger.error("share error!" + e.getMessage());
             return JsonUtil.getJSONString(1, "share error");
         }
         return JsonUtil.getJSONString(0,"share successful");
