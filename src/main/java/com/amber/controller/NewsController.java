@@ -2,6 +2,7 @@ package com.amber.controller;
 
 import com.amber.model.News;
 import com.amber.service.NewsService;
+import com.amber.service.QiniuService;
 import com.amber.util.FileUtil;
 import com.amber.util.JsonUtil;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 @Controller
@@ -25,6 +25,9 @@ public class NewsController {
 
     @Autowired
     private NewsService newsService;
+
+    @Autowired
+    private QiniuService qiniuService;
 
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(NewsController.class);
 
@@ -36,6 +39,7 @@ public class NewsController {
         String imgUrl = newsService.saveImage(file);
         News news = newsService.addNews(title,link,imgUrl);
         if(news == null){
+            logger.error("share error!");
             return JsonUtil.getJSONString(1, "share error");
         }
         return JsonUtil.getJSONString(0,"share successful");
@@ -45,7 +49,8 @@ public class NewsController {
     @ResponseBody
     public String uploadImage(@RequestParam("file") MultipartFile file){
         try{
-            String imageUrl = newsService.saveImage(file);
+            //String imageUrl = newsService.saveImage(file);
+            String imageUrl = qiniuService.uploadImage(file);
             if(imageUrl == null){
                 return JsonUtil.getJSONString(1,"image上传失败");
             }

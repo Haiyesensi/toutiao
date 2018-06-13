@@ -3,6 +3,7 @@ package com.amber.service;
 import com.amber.aspect.LogAspect;
 import com.amber.dao.TicketDao;
 import com.amber.dao.UserDao;
+import com.amber.model.HostHolder;
 import com.amber.model.Ticket;
 import com.amber.model.User;
 import com.amber.util.MD5Util;
@@ -24,6 +25,9 @@ public class UserService {
 
     @Autowired
     TicketDao ticketDao;
+
+    @Autowired
+    HostHolder hostHolder;
 
     public Map<String,Object> register(String username,String password){
 
@@ -80,6 +84,9 @@ public class UserService {
 
         Ticket ticket = ticketDao.selectByUserId(user.getId());
         ticketDao.updateStatus(0,ticket.getTicket());
+        Date date = new Date();
+        date.setTime(date.getTime()+1000*3600*24);
+        ticketDao.updateExpired(date, ticket.getTicket());
         map.put("ticket",ticket.getTicket());
 
         return map;

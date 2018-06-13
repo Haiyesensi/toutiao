@@ -3,6 +3,8 @@ package com.amber.dao;
 import com.amber.model.Ticket;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
+
 @Mapper
 public interface TicketDao {
     String TABLE_NAME = "login_ticket";
@@ -20,4 +22,7 @@ public interface TicketDao {
 
     @Update({"update ",TABLE_NAME," set status=#{status} where ticket=#{ticket}"})
     void updateStatus(@Param("status") int status,@Param("ticket") String ticket);
+
+    @Update({"update ",TABLE_NAME," set expired=#{expired} where ticket=#{ticket}"})
+    void updateExpired(@Param("expired") Date expired, @Param("ticket") String ticket);
 }

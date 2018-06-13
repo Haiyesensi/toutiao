@@ -18,6 +18,7 @@ import java.util.UUID;
 
 @Service
 public class NewsService {
+
     @Autowired
     private NewsDao newsDao;
     @Autowired
@@ -47,16 +48,7 @@ public class NewsService {
 
 
     public String saveImage(MultipartFile file) throws IOException {
-        int dotPos = file.getOriginalFilename().lastIndexOf(".");
-
-        if(dotPos < 0) return null;
-
-        String fileExt = file.getOriginalFilename().substring(dotPos + 1);
-        if(!FileUtil.isImage(fileExt)){
-            return null;
-        }
-
-        String fileName = UUID.randomUUID().toString().replaceAll("-","") + "."+fileExt;
+        String fileName = FileUtil.getImageName(file);
         Files.copy(file.getInputStream(),new File(FileUtil.IMAGE_SAVE_DIR + fileName).toPath(),StandardCopyOption.REPLACE_EXISTING);
 
         return FileUtil.TOUTIAO_DOMAIN + "image?name=" + fileName;

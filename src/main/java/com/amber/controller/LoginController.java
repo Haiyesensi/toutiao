@@ -1,5 +1,6 @@
 package com.amber.controller;
 
+import com.amber.model.HostHolder;
 import com.amber.service.UserService;
 import com.amber.util.JsonUtil;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ public class LoginController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    HostHolder hostHolder;
 
     @RequestMapping(path = {"/reg"},method = {RequestMethod.GET,RequestMethod.POST})
     @ResponseBody
@@ -62,6 +66,12 @@ public class LoginController {
                     cookie.setMaxAge(3600*24*5);
                 }
                 httpServletResponse.addCookie(cookie);
+                if(hostHolder.getUser() == null){
+                    logger.error("no user");
+                }else {
+                    logger.error("has user");
+                }
+
                 return JsonUtil.getJSONString(0,"登录成功");
             }else{
                 return JsonUtil.getJSONString(1,map);
@@ -75,7 +85,6 @@ public class LoginController {
     @RequestMapping(path = {"/logout"},method = {RequestMethod.GET,RequestMethod.POST})
     public String logout(@CookieValue("ticket") String ticket){
         userService.logout(ticket);
-
         return "redirect:/";
     }
 }
