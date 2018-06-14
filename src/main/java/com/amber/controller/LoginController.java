@@ -25,65 +25,59 @@ public class LoginController {
     @Autowired
     HostHolder hostHolder;
 
-    @RequestMapping(path = {"/reg"},method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path = {"/reg"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String register(Model model, @RequestParam(value = "username") String username,
                            @RequestParam(value = "password") String password,
-                           @RequestParam(value = "rememberme",defaultValue = "0") int rememberme, HttpServletResponse response){
+                           @RequestParam(value = "rememberme", defaultValue = "0") int rememberme, HttpServletResponse response) {
 
-        try{
-            Map<String,Object>map= userService.register(username,password);
-            if(map.containsKey("ticket")){
-                Cookie cookie = new Cookie("ticket",map.get("ticket").toString());
+        try {
+            Map<String, Object> map = userService.register(username, password);
+            if (map.containsKey("ticket")) {
+                Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
-                if(rememberme > 0){
-                    cookie.setMaxAge(3600*24*5);
+                if (rememberme > 0) {
+                    cookie.setMaxAge(3600 * 24 * 5);
                 }
                 response.addCookie(cookie);
 
-                return JsonUtil.getJSONString(0,"注册成功");
-            }else{
-                return JsonUtil.getJSONString(1,map);
+                return JsonUtil.getJSONString(0, "注册成功");
+            } else {
+                return JsonUtil.getJSONString(1, map);
             }
-        }catch (Exception e){
-            logger.info("注册异常： "+e.getMessage());
-            return JsonUtil.getJSONString(2,"注册异常");
+        } catch (Exception e) {
+            logger.info("注册异常： " + e.getMessage());
+            return JsonUtil.getJSONString(2, "注册异常");
         }
     }
 
-    @RequestMapping(path = {"/login"},method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path = {"/login"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String login(Model model, @RequestParam(value = "username") String username,
-                           @RequestParam(value = "password") String password,
-                           @RequestParam(value = "rememberme",defaultValue = "0") int rememberme,HttpServletResponse httpServletResponse){
+                        @RequestParam(value = "password") String password,
+                        @RequestParam(value = "rememberme", defaultValue = "0") int rememberme, HttpServletResponse httpServletResponse) {
 
-        try{
-            Map<String,Object>map= userService.login(username,password);
-            if(map.containsKey("ticket")){
-                Cookie cookie = new Cookie("ticket",map.get("ticket").toString());
+        try {
+            Map<String, Object> map = userService.login(username, password);
+            if (map.containsKey("ticket")) {
+                Cookie cookie = new Cookie("ticket", map.get("ticket").toString());
                 cookie.setPath("/");
-                if(rememberme > 0){
-                    cookie.setMaxAge(3600*24*5);
+                if (rememberme > 0) {
+                    cookie.setMaxAge(3600 * 24 * 5);
                 }
                 httpServletResponse.addCookie(cookie);
-                if(hostHolder.getUser() == null){
-                    logger.error("no user");
-                }else {
-                    logger.error("has user");
-                }
-
-                return JsonUtil.getJSONString(0,"登录成功");
-            }else{
-                return JsonUtil.getJSONString(1,map);
+                return JsonUtil.getJSONString(0, "登录成功");
+            } else {
+                return JsonUtil.getJSONString(1, map);
             }
-        }catch (Exception e){
-            logger.info("登录异常： "+e.getMessage());
-            return JsonUtil.getJSONString(2,"登录异常");
+        } catch (Exception e) {
+            logger.info("登录异常： " + e.getMessage());
+            return JsonUtil.getJSONString(2, "登录异常");
         }
     }
 
-    @RequestMapping(path = {"/logout"},method = {RequestMethod.GET,RequestMethod.POST})
-    public String logout(@CookieValue("ticket") String ticket){
+    @RequestMapping(path = {"/logout"}, method = {RequestMethod.GET, RequestMethod.POST})
+    public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         return "redirect:/";
     }

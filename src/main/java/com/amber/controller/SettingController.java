@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class SettingController {
 
-    @RequestMapping(value = "/setting",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/setting", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String setting(){
+    public String setting() {
         return "setting:";
     }
 }

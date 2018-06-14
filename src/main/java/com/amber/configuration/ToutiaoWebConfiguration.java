@@ -20,7 +20,7 @@ public class ToutiaoWebConfiguration extends WebMvcConfigurerAdapter {
         //全局拦截
         registry.addInterceptor(passportInterceptor);
         //只对setting页面进行访问拦截
-        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/setting","/user/addNews","/login");
+        registry.addInterceptor(loginRequiredInterceptor).addPathPatterns("/setting");
         super.addInterceptors(registry);
     }
 }

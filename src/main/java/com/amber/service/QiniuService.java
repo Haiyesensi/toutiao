@@ -1,4 +1,5 @@
 package com.amber.service;
+
 import com.alibaba.fastjson.JSONObject;
 import com.amber.util.FileUtil;
 import com.qiniu.common.QiniuException;
@@ -14,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class QiniuService{
+public class QiniuService {
 
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(QiniuService.class);
 
@@ -26,17 +27,16 @@ public class QiniuService{
     private static final UploadManager uploadImage = new UploadManager(new Configuration(Zone.zone0()));
 
 
-
-    private String getUpToken(){
+    private String getUpToken() {
 
         return AUTH.uploadToken(BUCKET_NAME);
     }
 
 
-    public String uploadImage(MultipartFile file)throws IOException{
-        try{
+    public String uploadImage(MultipartFile file) throws IOException {
+        try {
             String fileName = FileUtil.getImageName(file);
-            if(fileName == null){
+            if (fileName == null) {
                 logger.error("not a image");
                 return null;
             }
@@ -48,14 +48,12 @@ public class QiniuService{
                 logger.error("七牛异常:" + res.bodyString());
                 return null;
             }
-        }catch (QiniuException e){
+        } catch (QiniuException e) {
             logger.error("qiniu error");
             return null;
         }
 
     }
-
-
 
 
 }

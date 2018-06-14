@@ -33,10 +33,10 @@ public class PassportInterceptor implements HandlerInterceptor {
         String ticket = null;
 
         //先看看请求中有没有cookie，如果没有则肯定没有登录
-        if(httpServletRequest.getCookies() != null){
+        if (httpServletRequest.getCookies() != null) {
             //如果有cookie，看看cookie里面有没有ticket，检查是否是登陆状态
-            for(Cookie cookie:httpServletRequest.getCookies()){
-                if(cookie.getName().equals("ticket")){
+            for (Cookie cookie : httpServletRequest.getCookies()) {
+                if (cookie.getName().equals("ticket")) {
                     ticket = cookie.getValue();
                     break;
                 }
@@ -44,10 +44,10 @@ public class PassportInterceptor implements HandlerInterceptor {
         }
 
         //ticket存在，用户是已经登陆了的
-        if(ticket != null){
+        if (ticket != null) {
             Ticket loginTicket = ticketDao.selectByTicket(ticket);
             //ticket是伪造的||ticket过期了||ticket状态不合法
-            if(loginTicket == null || loginTicket.getExpired().before(new Date())||loginTicket.getStatus() != 0){
+            if (loginTicket == null || loginTicket.getExpired().before(new Date()) || loginTicket.getStatus() != 0) {
                 return true;
             }
             User user = userDao.selectById(loginTicket.getUserId());
@@ -58,8 +58,8 @@ public class PassportInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-        if(modelAndView != null&&hostHolder.getUser() != null){
-            modelAndView.addObject("user",hostHolder.getUser());
+        if (modelAndView != null && hostHolder.getUser() != null) {
+            modelAndView.addObject("user", hostHolder.getUser());
         }
     }
 

@@ -23,13 +23,13 @@ public class LoginRequiredInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-        if(hostHolder.getUser() == null){
+        if (hostHolder.getUser() == null) {
             httpServletResponse.sendRedirect("/?pop=1");
             return false;
         } else {
             User user = hostHolder.getUser();
             Ticket ticket = ticketDao.selectByUserId(user.getId());
-            if(ticket.getStatus() != 0){
+            if (ticket.getStatus() != 0) {
                 httpServletResponse.sendRedirect("/?pop=1");
                 return false;
             }

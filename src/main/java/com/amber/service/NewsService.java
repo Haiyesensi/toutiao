@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class NewsService {
@@ -28,11 +27,15 @@ public class NewsService {
         return newsDao.selectByUserIdAndOffset(userId, offset, limit);
     }
 
+    public News getNews(int newsId) {
+        return newsDao.selectByNewsId(newsId);
+    }
 
-    public News addNews(String title, String link, String img){
-        if(title == null || link == null || img == null){
+
+    public News addNews(String title, String link, String img) {
+        if (title == null || link == null || img == null) {
             return null;
-        }else {
+        } else {
             News news = new News();
             news.setUserId(hostHolder.getUser().getId());
             news.setTitle(title);
@@ -49,7 +52,7 @@ public class NewsService {
 
     public String saveImage(MultipartFile file) throws IOException {
         String fileName = FileUtil.getImageName(file);
-        Files.copy(file.getInputStream(),new File(FileUtil.IMAGE_SAVE_DIR + fileName).toPath(),StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(file.getInputStream(), new File(FileUtil.IMAGE_SAVE_DIR + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         return FileUtil.TOUTIAO_DOMAIN + "image?name=" + fileName;
     }

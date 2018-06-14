@@ -1,18 +1,18 @@
 package com.amber.controller;
 
 import com.amber.model.News;
+import com.amber.model.User;
 import com.amber.service.NewsService;
 import com.amber.service.QiniuService;
+import com.amber.service.UserService;
 import com.amber.util.FileUtil;
 import com.amber.util.JsonUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StreamUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,51 +29,68 @@ public class NewsController {
     @Autowired
     private QiniuService qiniuService;
 
+    @Autowired
+    private UserService userService;
+
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(NewsController.class);
 
-    @RequestMapping(path = "/user/addNews/",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(path = "/user/addNews/", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String addNews(@RequestParam("title") String title,
                           @RequestParam("link") String link,
                           @RequestParam("image") String image) throws IOException {
-        try{
-            News news = newsService.addNews(title,link,image);
-            if(news == null){
+        try {
+            News news = newsService.addNews(title, link, image);
+            if (news == null) {
                 logger.error("share error!");
                 return JsonUtil.getJSONString(1, "share error");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error("share error!" + e.getMessage());
             return JsonUtil.getJSONString(1, "share error");
         }
-        return JsonUtil.getJSONString(0,"share successful");
+        return JsonUtil.getJSONString(0, "share successful");
     }
 
-    @RequestMapping(path = "/uploadImage/",method = RequestMethod.POST)
+    @RequestMapping(path = "/news/{newsId}", method = {RequestMethod.GET, RequestMethod.POST})
+    public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
+        News news = newsService.getNews(newsId);
+        if (news == null) {
+            logger.error("newsDetail: no news!");
+            return JsonUtil.getJSONString(1, "newsDetail: no news!");
+        } else {
+            User owner = userService.getUserById(news.getUserId());
+            model.addAttribute("news", news);
+            model.addAttribute("owner", owner);
+        }
+        return "detail";
+    }
+
+    @RequestMapping(path = "/uploadImage/", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadImage(@RequestParam("file") MultipartFile file){
-        try{
+    public String uploadImage(@RequestParam("file") MultipartFile file) {
+        try {
             //String imageUrl = newsService.saveImage(file);
             String imageUrl = qiniuService.uploadImage(file);
-            if(imageUrl == null){
-                return JsonUtil.getJSONString(1,"image上传失败");
+            if (imageUrl == null) {
+                return JsonUtil.getJSONString(1, "image上传失败");
             }
-            return JsonUtil.getJSONString(0,imageUrl);
-        }catch (Exception e){
+            return JsonUtil.getJSONString(0, imageUrl);
+        } catch (Exception e) {
             logger.info("image upload failure" + e.getMessage());
-            return JsonUtil.getJSONString(1,"image上传失败");
+            return JsonUtil.getJSONString(1, "image上传失败");
         }
     }
 
-    @RequestMapping(path = "/image",method = RequestMethod.GET)
+    @RequestMapping(path = "/image", method = RequestMethod.GET)
     @ResponseBody
     public void getImages(@RequestParam("name") String imageName,
-                         HttpServletResponse httpServletResponse){
+                          HttpServletResponse httpServletResponse) {
         httpServletResponse.setContentType("image/jpg");
-        try{
+        try {
             StreamUtils.copy(new FileInputStream(new File(FileUtil.IMAGE_SAVE_DIR + imageName)), httpServletResponse.getOutputStream());
-        }catch (Exception e){
-            logger.error("image load failure: "+e.getMessage());
+        } catch (Exception e) {
+            logger.error("image load failure: " + e.getMessage());
         }
     }
 }
