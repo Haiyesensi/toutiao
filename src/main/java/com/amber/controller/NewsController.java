@@ -1,7 +1,10 @@
 package com.amber.controller;
 
+import com.amber.model.Comment;
+import com.amber.model.EntityType;
 import com.amber.model.News;
-import com.amber.model.User;
+import com.amber.model.ViewObject;
+import com.amber.service.CommentService;
 import com.amber.service.NewsService;
 import com.amber.service.QiniuService;
 import com.amber.service.UserService;
@@ -19,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class NewsController {
@@ -31,6 +36,9 @@ public class NewsController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
 
     private static org.slf4j.Logger logger = LoggerFactory.getLogger(NewsController.class);
 
@@ -55,13 +63,18 @@ public class NewsController {
     @RequestMapping(path = "/news/{newsId}", method = {RequestMethod.GET, RequestMethod.POST})
     public String newsDetail(@PathVariable("newsId") int newsId, Model model) {
         News news = newsService.getNews(newsId);
-        if (news == null) {
-            logger.error("newsDetail: no news!");
-            return JsonUtil.getJSONString(1, "newsDetail: no news!");
-        } else {
-            User owner = userService.getUserById(news.getUserId());
+        if (news != null) {
+            List<Comment> comments = commentService.getCommentByEntity(news.getId(), EntityType.ENTITY_NEWS);
+            List<ViewObject> commentVo = new ArrayList<>();
+            for (Comment comment : comments) {
+                ViewObject vo = new ViewObject();
+                vo.set("comment", comment);
+                vo.set("user", userService.getUserById(comment.getUserId()));
+                commentVo.add(vo);
+            }
             model.addAttribute("news", news);
-            model.addAttribute("owner", owner);
+            model.addAttribute("owner", userService.getUserById(news.getUserId()));
+            model.addAttribute("comments", commentVo);
         }
         return "detail";
     }
