@@ -2,10 +2,13 @@ package com.amber;
 
 import com.AmberApplication;
 import com.amber.dao.CommentDao;
+import com.amber.dao.MessageDao;
 import com.amber.dao.TicketDao;
 import com.amber.model.Comment;
 import com.amber.model.EntityType;
+import com.amber.model.Message;
 import com.amber.model.Ticket;
+import com.amber.service.MessageService;
 import com.amber.service.UserService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,53 +24,73 @@ import java.util.List;
 @SpringApplicationConfiguration(classes = AmberApplication.class)
 public class AmberApplicationTests {
 
-	@Autowired
-	TicketDao ticketDao;
+    @Autowired
+    TicketDao ticketDao;
 
-	@Autowired
-	CommentDao commentDao;
+    @Autowired
+    CommentDao commentDao;
 
-	@Autowired
-	UserService userService;
+    @Autowired
+    UserService userService;
 
-	@Test
-	public void contextLoads() {
-		for(int i = 0;i < 11;i++){
-			Ticket ticket = new Ticket();
-			ticket.setStatus(0);
-			Date date = new Date();
-			date.setTime(date.getTime() + 1000 * 3600 * 24);
-			ticket.setExpired(date);
-			ticket.setUserId(i + 1);
-			ticket.setTicket(String.format("Ticket%d", i));
-			ticketDao.addTicket(ticket);
-			ticketDao.updateStatus(2,String.format("Ticket%d",i));
-		}
-		Assert.assertEquals(4,ticketDao.selectByTicket("Ticket3").getId());
-	}
+    @Autowired
+    MessageService messageService;
 
-	@Test
-	public void add_comment_test() {
-		for (int i = 0; i < 3; i++) {
-			Comment comment = new Comment();
-			comment.setContent("this is a test comment" + String.valueOf(i));
-			comment.setCreatedDate(new Date());
-			comment.setEntityId(14);
-			comment.setEntityType(EntityType.ENTITY_NEWS);
-			comment.setUserId(46);
-			Assert.assertEquals(1, commentDao.addComment(comment));
-		}
-	}
+    @Autowired
+    MessageDao messageDao;
 
-	@Test
-	public void select_user_from_comment_id_test() {
-		int expectedUserId = 46;
-		int newsId = 14;
-		List<Comment> comments = commentDao.selectCommentByEntity(newsId, EntityType.ENTITY_NEWS);
-		for (Comment comment : comments) {
-			Assert.assertEquals(expectedUserId, userService.getUserById(comment.getUserId()).getId());
-		}
+    @Test
+    public void contextLoads() {
+        for (int i = 0; i < 11; i++) {
+            Ticket ticket = new Ticket();
+            ticket.setStatus(0);
+            Date date = new Date();
+            date.setTime(date.getTime() + 1000 * 3600 * 24);
+            ticket.setExpired(date);
+            ticket.setUserId(i + 1);
+            ticket.setTicket(String.format("Ticket%d", i));
+            ticketDao.addTicket(ticket);
+            ticketDao.updateStatus(2, String.format("Ticket%d", i));
+        }
+        Assert.assertEquals(4, ticketDao.selectByTicket("Ticket3").getId());
+    }
 
-	}
+    @Test
+    public void add_comment_test() {
+        for (int i = 0; i < 3; i++) {
+            Comment comment = new Comment();
+            comment.setContent("this is a test comment" + String.valueOf(i));
+            comment.setCreatedDate(new Date());
+            comment.setEntityId(14);
+            comment.setEntityType(EntityType.ENTITY_NEWS);
+            comment.setUserId(46);
+            Assert.assertEquals(1, commentDao.addComment(comment));
+        }
+    }
+
+    @Test
+    public void select_user_from_comment_id_test() {
+        int expectedUserId = 46;
+        int newsId = 14;
+        List<Comment> comments = commentDao.selectCommentByEntity(newsId, EntityType.ENTITY_NEWS);
+        for (Comment comment : comments) {
+            Assert.assertEquals(expectedUserId, userService.getUserById(comment.getUserId()).getId());
+        }
+
+    }
+
+    @Test
+    public void add_message_should_succesful_test() {
+        int expectFromId = 46;
+
+        Message message = new Message();
+        message.setFromId(46);
+        message.setToId(47);
+        message.setContent("hello");
+        message.setCreatedDate(new Date());
+        message.setConversationId("46_47");
+        Assert.assertEquals(1, messageDao.addMessage(message));
+        Assert.assertEquals(expectFromId, messageDao.selectMessageByCid("46_47").getFromId());
+    }
 
 }
