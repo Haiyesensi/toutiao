@@ -34,6 +34,12 @@ public class CommentService {
         newsDao.updateNewsCommentCount(newsDao.selectCommentCount(newsId) + 1, newsId);
     }
 
+    public void deleteComment(int newsId) {
+        commentDao.deleteComment(newsId, EntityType.ENTITY_NEWS);
+        int commentCount = newsDao.selectCommentCount(newsId);
+        newsDao.updateNewsCommentCount(commentCount - 1, newsId);
+    }
+
 
     public List<Comment> getCommentByEntity(int entity_id, int entity_type) {
         return commentDao.selectCommentByEntity(entity_id, entity_type);
