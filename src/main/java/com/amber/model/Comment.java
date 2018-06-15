@@ -8,11 +8,9 @@ public class Comment {
     private int entityId;
     private int userId;
     private String content;
-    private int newsId;
     private int status;
     private Date createdDate;
-    private int likeCount;
-    private int replyCount;
+
 
     public int getId() {
         return id;
@@ -54,14 +52,6 @@ public class Comment {
         this.content = content;
     }
 
-    public int getNewsId() {
-        return newsId;
-    }
-
-    public void setNewsId(int newsId) {
-        this.newsId = newsId;
-    }
-
     public int getStatus() {
         return status;
     }
@@ -78,19 +68,4 @@ public class Comment {
         this.createdDate = createdDate;
     }
 
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public int getReplyCount() {
-        return replyCount;
-    }
-
-    public void setReplyCount(int replyCount) {
-        this.replyCount = replyCount;
-    }
 }

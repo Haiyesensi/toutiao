@@ -54,7 +54,6 @@ public class AmberApplicationTests {
 			comment.setCreatedDate(new Date());
 			comment.setEntityId(14);
 			comment.setEntityType(EntityType.ENTITY_NEWS);
-			comment.setLikeCount(i);
 			comment.setUserId(46);
 			Assert.assertEquals(1, commentDao.addComment(comment));
 		}

@@ -1,10 +1,7 @@
 package com.amber.dao;
 
 import com.amber.model.News;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -20,6 +17,12 @@ public interface NewsDao {
 
     @Select({"select", SELECT_FIELDS, " from ", TABLE_NAME, "where id=#{newsId}"})
     News selectByNewsId(int newsId);
+
+    @Update({"update ", TABLE_NAME, " set commentCount=#{commentCount} where id=#{id}"})
+    int updateNewsCommentCount(@Param("commentCount") int commentCount, @Param("id") int id);
+
+    @Select({"select commentCount from", TABLE_NAME, "where id=#{id}"})
+    int selectCommentCount(@Param("id") int id);
 
     List<News> selectByUserIdAndOffset(@Param("userId") int userId, @Param("offset") int offset,
                                        @Param("limit") int limit);
