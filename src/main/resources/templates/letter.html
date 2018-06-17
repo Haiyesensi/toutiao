@@ -4,7 +4,7 @@
             <ul class="letter-list">
                 #foreach($conversation in $conversations)
                 <li id="conversation-item-10005_622873">
-                    <a class="letter-link" href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}"></a>
+                    <a class="letter-link" href="/msg/detail?cid=$!{conversation.conversation.conversationId}"></a>
                     <div class="letter-info">
                         <span class="l-time">$date.format('yyyy-MM-dd HH:mm:ss', $!{conversation.conversation.createdDate})</span>
                         <div class="l-operate-bar">
@@ -13,15 +13,18 @@
                             删除
                             </a>
                             -->
-                            <a href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}">
+                            <a href="/msg/detail?cid=$!{conversation.conversation.conversationId}">
                                 共$!{conversation.conversation.id}条会话
                             </a>
                         </div>
                     </div>
                     <div class="chat-headbox">
+                        #if($conversation.unreadCount > 0)
                         <span class="msg-num">
                             $!{conversation.unreadCount}
                         </span>
+                        #else
+                        #end
                         <a class="list-head" href="/user/$!{conversation.userId}">
                             <img alt="头像" src="$!{conversation.headUrl}">
                         </a>
@@ -31,7 +34,7 @@
                             $!{conversation.userName}
                         </a>
                         <p class="letter-brief">
-                            <a href="/msg/detail?conversationId=$!{conversation.conversation.conversationId}">
+                            <a href="/msg/detail?cid=$!{conversation.conversation.conversationId}">
                                 $!{conversation.conversation.content}
                             </a>
                         </p>

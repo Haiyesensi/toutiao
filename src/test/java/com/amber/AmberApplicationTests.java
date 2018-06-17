@@ -90,7 +90,7 @@ public class AmberApplicationTests {
         message.setCreatedDate(new Date());
         message.setConversationId("46_47");
         Assert.assertEquals(1, messageDao.addMessage(message));
-        Assert.assertEquals(expectFromId, messageDao.selectMessageByCid("46_47").getFromId());
+        Assert.assertEquals(expectFromId, messageDao.selectAllMessageByCid("46_47", 0, 1).get(0).getFromId());
     }
 
 }
