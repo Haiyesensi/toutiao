@@ -50,6 +50,9 @@ public class NewsService {
     }
 
 
+    public void updateLikeCount(int newsId, int likeCount) {
+        newsDao.updateNewsLikeCount(newsId, likeCount);
+    }
     public String saveImage(MultipartFile file) throws IOException {
         String fileName = FileUtil.getImageName(file);
         Files.copy(file.getInputStream(), new File(FileUtil.IMAGE_SAVE_DIR + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);

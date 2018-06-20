@@ -1,7 +1,10 @@
 package com.amber.controller;
 
+import com.amber.model.EntityType;
+import com.amber.model.HostHolder;
 import com.amber.model.News;
 import com.amber.model.ViewObject;
+import com.amber.service.LikeService;
 import com.amber.service.NewsService;
 import com.amber.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +26,27 @@ public class HomeController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private LikeService likeService;
+
+    @Autowired
+    private HostHolder hostHolder;
+
     private List<ViewObject> getNews(int userId, int offset, int limit) {
         List<News> newsList = newsService.getLatestNews(userId, offset, limit);
+
 
         List<ViewObject> vos = new ArrayList<>();
         for (News news : newsList) {
             ViewObject vo = new ViewObject();
             vo.set("news", news);
             vo.set("user", userService.getUserById(news.getUserId()));
+
+            if (hostHolder.getUser() != null) {
+                vo.set("like", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_NEWS, news.getId()));
+            } else {
+                vo.set("like", 0);
+            }
             vos.add(vo);
         }
         return vos;
