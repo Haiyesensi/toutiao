@@ -39,17 +39,19 @@ public class MessageController {
     public String messageList(Model model) {
         try {
             List<Message> messages = messageService.getAllConversationByUserId(hostHolder.getUser().getId(), 0, 10);
+            int localUserId = hostHolder.getUser().getId();
             List<ViewObject> conversationVOs = new ArrayList<>();
             for (Message message : messages) {
                 ViewObject vo = new ViewObject();
-                int targetId = (message.getFromId() == hostHolder.getUser().getId()) ? message.getFromId() : message.getToId();
+                int targetId = (message.getFromId() == localUserId) ? message.getToId() : message.getFromId();
                 User user = userService.getUserById(targetId);
-                int unReadCount = messageService.getUnreadCountByCid(hostHolder.getUser().getId(), message.getConversationId());
+
                 vo.set("conversation", message);
+                vo.set("totalCount", messageService.getConversationCountByCid(message.getConversationId()));
                 vo.set("userId", user.getId());
                 vo.set("headUrl", user.getHeadUrl());
                 vo.set("userName", user.getName());
-                vo.set("unreadCount", unReadCount);
+                vo.set("unreadCount", messageService.getUnreadCountByCid(localUserId, message.getConversationId()));
                 conversationVOs.add(vo);
             }
             model.addAttribute("conversations", conversationVOs);
