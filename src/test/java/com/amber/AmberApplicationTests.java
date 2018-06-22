@@ -4,12 +4,11 @@ import com.AmberApplication;
 import com.amber.dao.CommentDao;
 import com.amber.dao.MessageDao;
 import com.amber.dao.TicketDao;
-import com.amber.model.Comment;
-import com.amber.model.EntityType;
-import com.amber.model.Message;
-import com.amber.model.Ticket;
+import com.amber.model.*;
 import com.amber.service.MessageService;
 import com.amber.service.UserService;
+import com.amber.util.JedisAdapter;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +37,9 @@ public class AmberApplicationTests {
 
     @Autowired
     MessageDao messageDao;
+
+    @Autowired
+    JedisAdapter jedisAdapter;
 
     @Test
     public void contextLoads() {
@@ -91,6 +93,19 @@ public class AmberApplicationTests {
         message.setConversationId("46_47");
         Assert.assertEquals(1, messageDao.addMessage(message));
         Assert.assertEquals(expectFromId, messageDao.selectAllMessageByCid("46_47", 0, 1).get(0).getFromId());
+    }
+
+    @Test
+    public void should_equals_seri_user() {
+        User user = new User();
+        user.setName("name");
+        user.setHeadUrl("https://sakdjoiadna");
+        user.setPassword("auidadas");
+        user.setSalt("asd178");
+        jedisAdapter.setObject("u", user);
+        User user1 = jedisAdapter.getObject("u", User.class);
+        Assert.assertEquals("name", user1.getName());
+        System.out.println(ToStringBuilder.reflectionToString(user1));
     }
 
 }
