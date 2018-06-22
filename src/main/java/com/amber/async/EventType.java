@@ -4,7 +4,8 @@ public enum EventType {
     LIKE(0),
     COMMENT(1),
     DISLIKE(2),
-    MAIL(3);
+    LOGIN(3),
+    MAIL(4);
 
 
     private int value;

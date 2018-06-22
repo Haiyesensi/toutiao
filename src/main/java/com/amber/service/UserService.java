@@ -81,6 +81,7 @@ public class UserService {
         }
         //MD5(明文密码+salt字段) =?= 用户密文
         User user = userDao.selectByName(username);
+        map.put("user", user);
         if (!MD5Util.encrypt(password + user.getSalt()).equals(user.getPassword())) {
             map.put("errmsg4", "密码不正确");
             return map;
@@ -88,9 +89,11 @@ public class UserService {
 
         Ticket ticket = ticketDao.selectByUserId(user.getId());
         ticketDao.updateStatus(0, ticket.getTicket());
+
         Date date = new Date();
         date.setTime(date.getTime() + 1000 * 3600 * 24);
         ticketDao.updateExpired(date, ticket.getTicket());
+
         map.put("ticket", ticket.getTicket());
 
         return map;

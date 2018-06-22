@@ -1,6 +1,10 @@
 package com.amber.controller;
 
+import com.amber.async.EventModel;
+import com.amber.async.EventProducer;
+import com.amber.async.EventType;
 import com.amber.model.HostHolder;
+import com.amber.model.User;
 import com.amber.service.UserService;
 import com.amber.util.JsonUtil;
 import org.slf4j.Logger;
@@ -24,6 +28,9 @@ public class LoginController {
 
     @Autowired
     HostHolder hostHolder;
+
+    @Autowired
+    EventProducer eventProducer;
 
     @RequestMapping(path = {"/reg"}, method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
@@ -66,6 +73,16 @@ public class LoginController {
                     cookie.setMaxAge(3600 * 24 * 5);
                 }
                 httpServletResponse.addCookie(cookie);
+
+                EventModel loginModel = new EventModel(EventType.LOGIN);
+                User user = (User) map.get("user");
+
+                loginModel.setActorId(user.getId());
+                loginModel.setExt("username", user.getName());
+                loginModel.setExt("to", "shihchang@163.com");
+
+                eventProducer.fireEvent(loginModel);
+
                 return JsonUtil.getJSONString(0, "登录成功");
             } else {
                 return JsonUtil.getJSONString(1, map);
