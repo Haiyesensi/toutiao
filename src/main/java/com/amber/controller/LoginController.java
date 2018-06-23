@@ -79,7 +79,7 @@ public class LoginController {
 
                 loginModel.setActorId(user.getId());
                 loginModel.setExt("username", user.getName());
-                loginModel.setExt("to", "shihchang@163.com");
+                loginModel.setExt("email", "1130229445@qq.com");
 
                 eventProducer.fireEvent(loginModel);
 
